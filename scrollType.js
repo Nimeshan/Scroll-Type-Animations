@@ -1,417 +1,194 @@
 gsap.registerPlugin(ScrollTrigger);
 Splitting();
 
-// Lenis smooth scrolling
-let lenis;
+// --- Lenis smooth scrolling ---
+const lenis = new Lenis({ lerp: 0.2, smooth: true });
+const scrollFn = (time) => { lenis.raf(time); requestAnimationFrame(scrollFn); };
+requestAnimationFrame(scrollFn);
+lenis.on("scroll", () => ScrollTrigger.update());
 
-// Initialize Lenis smooth scrolling
-const initSmoothScrolling = () => {
-  lenis = new Lenis({
-    lerp: 0.2,
-    smooth: true
-  });
+// --- Cache elements once ---
+const types = Array.from({ length: 10 }, (_, i) =>
+  gsap.utils.toArray(`[data-splitting][data-effect${i + 1}]`)
+);
 
-  lenis.on("scroll", () => ScrollTrigger.update());
+// --- Helper: set perspective once per type ---
+const setPerspective = (elements, value) => elements.forEach(el => el.style.perspective = value);
 
-  const scrollFn = (time) => {
-    lenis.raf(time);
-    requestAnimationFrame(scrollFn);
-  };
-
-  requestAnimationFrame(scrollFn);
-};
-
-const type1 = [...document.querySelectorAll("[data-splitting][data-effect1]")];
-
-const type2 = [...document.querySelectorAll("[data-splitting][data-effect2]")];
-
-const type3 = [...document.querySelectorAll("[data-splitting][data-effect3]")];
-
-const type4 = [...document.querySelectorAll("[data-splitting][data-effect4]")];
-
-const type5 = [...document.querySelectorAll("[data-splitting][data-effect5]")];
-
-const type6 = [...document.querySelectorAll("[data-splitting][data-effect6]")];
-
-const type7 = [...document.querySelectorAll("[data-splitting][data-effect7]")];
-
-const type8 = [...document.querySelectorAll("[data-splitting][data-effect8]")];
-
-const type9 = [...document.querySelectorAll("[data-splitting][data-effect9]")];
-
-const type10 = [
-  ...document.querySelectorAll("[data-splitting][data-effect10]")
-];
-
+// --- Animations ---
 const scroll = () => {
-  type1.forEach((title) => {
-    gsap.fromTo(
-      title,
-      {
-        transformOrigin: "0% 50%",
-        rotate: 3
-      },
-      {
-        ease: "none",
-        rotate: 0,
-        scrollTrigger: {
-          trigger: title,
-          start: "top bottom",
-          end: "top top",
-          scrub: true
-        }
-      }
-    );
+  // Type 1
+  types[0].forEach(title => {
+    gsap.fromTo(title, { transformOrigin: "0% 50%", rotate: 3 }, {
+      rotate: 0,
+      ease: "none",
+      scrollTrigger: { trigger: title, start: "top bottom", end: "top top", scrub: true }
+    });
 
-    gsap.fromTo(
-      title.querySelectorAll(".word"),
-      {
-        "will-change": "opacity",
-        opacity: 0.1
-      },
-      {
-        ease: "none",
-        opacity: 1,
-        stagger: 0.05,
-        scrollTrigger: {
-          trigger: title,
-          start: "top bottom-=20%",
-          end: "center top+=20%",
-          scrub: true
-        }
-      }
-    );
+    gsap.fromTo(title.querySelectorAll(".word"), { opacity: 0.1 }, {
+      opacity: 1,
+      ease: "none",
+      stagger: 0.05,
+      scrollTrigger: { trigger: title, start: "top bottom-=20%", end: "center top+=20%", scrub: true }
+    });
   });
 
-  type2.forEach((title) => {
+  // Type 2
+  types[1].forEach(title => {
     const chars = title.querySelectorAll(".char");
+    setPerspective([title], 1000);
 
-    chars.forEach((char) => gsap.set(char.parentNode, { perspective: 1000 }));
-
-    gsap.fromTo(
-      chars,
-      {
-        "will-change": "opacity, transform",
-        opacity: 0,
-        rotateX: () => gsap.utils.random(-120, 120),
-        z: () => gsap.utils.random(-200, 200)
-      },
-      {
-        ease: "none",
-        opacity: 1,
-        rotateX: 0,
-        z: 0,
-        stagger: 0.02,
-        scrollTrigger: {
-          trigger: title,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true
-        }
-      }
-    );
+    gsap.fromTo(chars, { opacity: 0, rotateX: () => gsap.utils.random(-120,120), z: () => gsap.utils.random(-200,200) }, {
+      opacity: 1,
+      rotateX: 0,
+      z: 0,
+      ease: "none",
+      stagger: 0.02,
+      scrollTrigger: { trigger: title, start: "top bottom", end: "bottom top", scrub: true }
+    });
   });
 
-  type3.forEach((title) => {
+  // Type 3
+  types[2].forEach(title => {
     const chars = title.querySelectorAll(".char");
+    setPerspective([title], 1000);
 
-    chars.forEach((char) => gsap.set(char.parentNode, { perspective: 1000 }));
-
-    gsap.fromTo(
-      chars,
-      {
-        "will-change": "opacity, transform",
-        opacity: 0.2,
-        z: -800
-      },
-      {
-        ease: "back.out(1.2)",
-        opacity: 1,
-        z: 0,
-        stagger: 0.04,
-        scrollTrigger: {
-          trigger: title,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true
-        }
-      }
-    );
+    gsap.fromTo(chars, { opacity: 0.2, z: -800 }, {
+      opacity: 1,
+      z: 0,
+      ease: "back.out(1.2)",
+      stagger: 0.04,
+      scrollTrigger: { trigger: title, start: "top bottom", end: "bottom top", scrub: true }
+    });
   });
 
-  type4.forEach((title) => {
+  // Type 4
+  types[3].forEach(title => {
     const chars = title.querySelectorAll(".char");
+    setPerspective([title], 1000);
 
-    chars.forEach((char) => gsap.set(char.parentNode, { perspective: 1000 }));
-
-    gsap.fromTo(
-      chars,
-      {
-        "will-change": "opacity, transform",
-        transformOrigin: "50% 0%",
-        opacity: 0,
-        rotationX: -90,
-        z: -200
-      },
-      {
-        ease: "power1",
-        opacity: 1,
-        stagger: 0.05,
-        rotationX: 0,
-        z: 0,
-        scrollTrigger: {
-          trigger: title,
-          start: "center bottom",
-          end: "bottom top+=20%",
-          scrub: true
-        }
-      }
-    );
+    gsap.fromTo(chars, { opacity: 0, rotationX: -90, z: -200, transformOrigin: "50% 0%" }, {
+      opacity: 1,
+      rotationX: 0,
+      z: 0,
+      ease: "power1",
+      stagger: 0.05,
+      scrollTrigger: { trigger: title, start: "center bottom", end: "bottom top+=20%", scrub: true }
+    });
   });
 
-  type5.forEach((title) => {
+  // Type 5
+  types[4].forEach(title => {
     const chars = title.querySelectorAll(".char");
+    setPerspective([title], 1000);
 
-    chars.forEach((char) => gsap.set(char.parentNode, { perspective: 1000 }));
-
-    gsap.fromTo(
-      chars,
-      {
-        "will-change": "opacity, transform",
-        transformOrigin: "50% 100%",
-        opacity: 0,
-        rotationX: 90
-      },
-      {
-        ease: "power4",
-        opacity: 1,
-        stagger: {
-          each: 0.03,
-          from: "random"
-        },
-        rotationX: 0,
-        scrollTrigger: {
-          trigger: title,
-          start: "center bottom",
-          end: "bottom top+=20%",
-          scrub: true
-        }
-      }
-    );
+    gsap.fromTo(chars, { opacity: 0, rotationX: 90, transformOrigin: "50% 100%" }, {
+      opacity: 1,
+      rotationX: 0,
+      ease: "power4",
+      stagger: { each: 0.03, from: "random" },
+      scrollTrigger: { trigger: title, start: "center bottom", end: "bottom top+=20%", scrub: true }
+    });
   });
 
-  type6.forEach((title) => {
-    const words = [...title.querySelectorAll(".word")];
-
-    for (const word of words) {
+  // Type 6
+  types[5].forEach(title => {
+    title.querySelectorAll(".word").forEach(word => {
       const chars = word.querySelectorAll(".char");
+      setPerspective([word], 2000);
 
-      chars.forEach((char) => gsap.set(char.parentNode, { perspective: 2000 }));
-
-      gsap.fromTo(
-        chars,
-        {
-          "will-change": "opacity, transform",
-          opacity: 0,
-          y: (position, _, arr) => -40 * Math.abs(position - arr.length / 2),
-          z: () => gsap.utils.random(-1500, -600),
-          rotationX: () => gsap.utils.random(-500, -200)
-        },
-        {
-          ease: "power1.inOut",
-          opacity: 1,
-          y: 0,
-          z: 0,
-          rotationX: 0,
-          stagger: {
-            each: 0.06,
-            from: "center"
-          },
-          scrollTrigger: {
-            trigger: word,
-            start: "top bottom",
-            end: "top top+=15%",
-            scrub: true
-          }
-        }
-      );
-    }
-  });
-
-  type7.forEach((title) => {
-    const chars = title.querySelectorAll(".char");
-    const charsTotal = chars.length;
-
-    gsap.fromTo(
-      chars,
-      {
-        "will-change": "transform",
-        y: (position) => {
-          const factor =
-            position < Math.ceil(charsTotal / 2)
-              ? position
-              : Math.ceil(charsTotal / 2) -
-                Math.abs(Math.floor(charsTotal / 2) - position) -
-                1;
-          return (charsTotal / 2 - factor + 6) * 130;
-        }
-      },
-      {
-        ease: "elastic.out(.4)",
-        y: 0,
-        stagger: {
-          amount: 0.1,
-          from: "center"
-        },
-        scrollTrigger: {
-          trigger: title,
-          start: "top bottom",
-          end: "bottom top-=50%",
-          scrub: true
-        }
-      }
-    );
-  });
-
-  type8.forEach((title) => {
-    gsap.fromTo(
-      title.querySelectorAll(".char"),
-      {
-        "will-change": "transform",
-        transformOrigin: "50% 100%",
-        scaleY: 0
-      },
-      {
-        ease: "power3.in",
-        opacity: 1,
-        scaleY: 1,
-        stagger: 0.05,
-        scrollTrigger: {
-          trigger: title,
-          start: "center center",
-          end: "+=500%",
-          scrub: true,
-          pin: title.parentNode
-        }
-      }
-    );
-  });
-
-  type9.forEach((title) => {
-    const words = [...title.querySelectorAll(".word")];
-
-    for (const word of words) {
-      const chars = word.querySelectorAll(".char");
-      const charsTotal = chars.length;
-
-      gsap.fromTo(
-        chars,
-        {
-          "will-change": "transform, filter",
-          transformOrigin: "50% 100%",
-          scale: (position) => {
-            const factor =
-              position < Math.ceil(charsTotal / 2)
-                ? position
-                : Math.ceil(charsTotal / 2) -
-                  Math.abs(Math.floor(charsTotal / 2) - position) -
-                  1;
-            return gsap.utils.mapRange(
-              0,
-              Math.ceil(charsTotal / 2),
-              0.5,
-              2.1,
-              factor
-            );
-          },
-          y: (position) => {
-            const factor =
-              position < Math.ceil(charsTotal / 2)
-                ? position
-                : Math.ceil(charsTotal / 2) -
-                  Math.abs(Math.floor(charsTotal / 2) - position) -
-                  1;
-            return gsap.utils.mapRange(
-              0,
-              Math.ceil(charsTotal / 2),
-              0,
-              60,
-              factor
-            );
-          },
-          rotation: (position) => {
-            const factor =
-              position < Math.ceil(charsTotal / 2)
-                ? position
-                : Math.ceil(charsTotal / 2) -
-                  Math.abs(Math.floor(charsTotal / 2) - position) -
-                  1;
-            return position < charsTotal / 2
-              ? gsap.utils.mapRange(0, Math.ceil(charsTotal / 2), -4, 0, factor)
-              : gsap.utils.mapRange(0, Math.ceil(charsTotal / 2), 0, 4, factor);
-          },
-          filter: "blur(12px) opacity(0)"
-        },
-        {
-          ease: "power2.inOut",
-          y: 0,
-          rotation: 0,
-          scale: 1,
-          filter: "blur(0px) opacity(1)",
-          scrollTrigger: {
-            trigger: word,
-            start: "top bottom+=40%",
-            end: "top top+=15%",
-            scrub: true
-          },
-          stagger: {
-            amount: 0.15,
-            from: "center"
-          }
-        }
-      );
-    }
-  });
-
-  type10.forEach((title) => {
-    const words = [...title.querySelectorAll(".word")];
-
-    words.forEach((word) => gsap.set(word.parentNode, { perspective: 1000 }));
-
-    gsap.fromTo(
-      words,
-      {
-        "will-change": "opacity, transform",
-        z: () => gsap.utils.random(500, 950),
+      gsap.fromTo(chars, {
         opacity: 0,
-        xPercent: (pos) => gsap.utils.random(-100, 100),
-        yPercent: (pos) => gsap.utils.random(-10, 10),
-        rotationX: () => gsap.utils.random(-90, 90)
-      },
-      {
-        ease: "expo",
+        y: (i, _, arr) => -40 * Math.abs(i - arr.length/2),
+        z: () => gsap.utils.random(-1500, -600),
+        rotationX: () => gsap.utils.random(-500, -200)
+      }, {
         opacity: 1,
-        rotationX: 0,
-        rotationY: 0,
-        xPercent: 0,
-        yPercent: 0,
-        z: 0,
-        scrollTrigger: {
-          trigger: title,
-          start: "center center",
-          end: "+=300%",
-          scrub: true,
-          pin: title.parentNode
+        y: 0, z: 0, rotationX: 0,
+        ease: "power1.inOut",
+        stagger: { each: 0.06, from: "center" },
+        scrollTrigger: { trigger: word, start: "top bottom", end: "top top+=15%", scrub: true }
+      });
+    });
+  });
+
+  // Type 7
+  types[6].forEach(title => {
+    const chars = title.querySelectorAll(".char");
+    const N = chars.length;
+
+    gsap.fromTo(chars, { y: i => {
+      const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
+      return (N/2 - f + 6)*130;
+    }}, {
+      y: 0,
+      ease: "elastic.out(.4)",
+      stagger: { amount: 0.1, from: "center" },
+      scrollTrigger: { trigger: title, start: "top bottom", end: "bottom top-=50%", scrub: true }
+    });
+  });
+
+  // Type 8
+  types[7].forEach(title => {
+    const chars = title.querySelectorAll(".char");
+    gsap.fromTo(chars, { scaleY: 0, transformOrigin: "50% 100%" }, {
+      opacity: 1,
+      scaleY: 1,
+      ease: "power3.in",
+      stagger: 0.05,
+      scrollTrigger: { trigger: title, start: "center center", end: "+=500%", scrub: true, pin: title.parentNode }
+    });
+  });
+
+  // Type 9
+  types[8].forEach(title => {
+    title.querySelectorAll(".word").forEach(word => {
+      const chars = word.querySelectorAll(".char");
+      const N = chars.length;
+
+      gsap.fromTo(chars, {
+        scale: i => {
+          const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
+          return gsap.utils.mapRange(0, N/2, 0.5, 2.1, f);
         },
-        stagger: {
-          each: 0.006,
-          from: "random"
-        }
-      }
-    );
+        y: i => {
+          const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
+          return gsap.utils.mapRange(0, N/2, 0, 60, f);
+        },
+        rotation: i => {
+          const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
+          return i < N/2 ? gsap.utils.mapRange(0, N/2, -4,0,f) : gsap.utils.mapRange(0, N/2,0,4,f);
+        },
+        filter: "blur(12px) opacity(0)",
+        transformOrigin: "50% 100%"
+      }, {
+        scale: 1, y:0, rotation:0, filter:"blur(0px) opacity(1)",
+        ease: "power2.inOut",
+        stagger: { amount:0.15, from:"center" },
+        scrollTrigger: { trigger: word, start:"top bottom+=40%", end:"top top+=15%", scrub:true }
+      });
+    });
+  });
+
+  // Type 10
+  types[9].forEach(title => {
+    const words = title.querySelectorAll(".word");
+    setPerspective(words, 1000);
+
+    gsap.fromTo(words, {
+      z: () => gsap.utils.random(500,950),
+      opacity:0,
+      xPercent: () => gsap.utils.random(-100,100),
+      yPercent: () => gsap.utils.random(-10,10),
+      rotationX: () => gsap.utils.random(-90,90)
+    }, {
+      z:0, xPercent:0, yPercent:0, rotationX:0, rotationY:0, opacity:1,
+      ease:"expo",
+      stagger:{ each:0.006, from:"random" },
+      scrollTrigger:{ trigger:title, start:"center center", end:"+=300%", scrub:true, pin:title.parentNode }
+    });
   });
 };
 
-initSmoothScrolling();
-// GSAP Scroll Triggers
+// --- Run animations ---
 scroll();
