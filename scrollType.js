@@ -13,19 +13,22 @@ const types = Array.from({ length: 10 }, (_, i) =>
 );
 
 // --- Helper: set perspective once per type ---
-const setPerspective = (elements, value) => elements.forEach(el => el.style.perspective = value);
+const setPerspective = (elements, value) =>
+  elements.forEach(el => (el.style.perspective = value));
 
 // --- Animations ---
 const scroll = () => {
   // Type 1
   types[0].forEach(title => {
+    const words = title.querySelectorAll(".word");
+
     gsap.fromTo(title, { transformOrigin: "0% 50%", rotate: 3 }, {
       rotate: 0,
       ease: "none",
       scrollTrigger: { trigger: title, start: "top bottom", end: "top top", scrub: true }
     });
 
-    gsap.fromTo(title.querySelectorAll(".word"), { opacity: 0.1 }, {
+    gsap.fromTo(words, { opacity: 0.1 }, {
       opacity: 1,
       ease: "none",
       stagger: 0.05,
@@ -38,7 +41,14 @@ const scroll = () => {
     const chars = title.querySelectorAll(".char");
     setPerspective([title], 1000);
 
-    gsap.fromTo(chars, { opacity: 0, rotateX: () => gsap.utils.random(-120,120), z: () => gsap.utils.random(-200,200) }, {
+    const randomRot = Array.from(chars).map(() => gsap.utils.random(-120, 120));
+    const randomZ = Array.from(chars).map(() => gsap.utils.random(-200, 200));
+
+    gsap.fromTo(chars, {
+      opacity: 0,
+      rotateX: i => randomRot[i],
+      z: i => randomZ[i]
+    }, {
       opacity: 1,
       rotateX: 0,
       z: 0,
@@ -67,7 +77,12 @@ const scroll = () => {
     const chars = title.querySelectorAll(".char");
     setPerspective([title], 1000);
 
-    gsap.fromTo(chars, { opacity: 0, rotationX: -90, z: -200, transformOrigin: "50% 0%" }, {
+    gsap.fromTo(chars, {
+      opacity: 0,
+      rotationX: -90,
+      z: -200,
+      transformOrigin: "50% 0%"
+    }, {
       opacity: 1,
       rotationX: 0,
       z: 0,
@@ -82,7 +97,11 @@ const scroll = () => {
     const chars = title.querySelectorAll(".char");
     setPerspective([title], 1000);
 
-    gsap.fromTo(chars, { opacity: 0, rotationX: 90, transformOrigin: "50% 100%" }, {
+    gsap.fromTo(chars, {
+      opacity: 0,
+      rotationX: 90,
+      transformOrigin: "50% 100%"
+    }, {
       opacity: 1,
       rotationX: 0,
       ease: "power4",
@@ -93,15 +112,21 @@ const scroll = () => {
 
   // Type 6
   types[5].forEach(title => {
-    title.querySelectorAll(".word").forEach(word => {
+    const words = title.querySelectorAll(".word");
+
+    words.forEach(word => {
       const chars = word.querySelectorAll(".char");
+      const mid = chars.length / 2;
       setPerspective([word], 2000);
+
+      const randomZ = Array.from(chars).map(() => gsap.utils.random(-1500, -600));
+      const randomRotX = Array.from(chars).map(() => gsap.utils.random(-500, -200));
 
       gsap.fromTo(chars, {
         opacity: 0,
-        y: (i, _, arr) => -40 * Math.abs(i - arr.length/2),
-        z: () => gsap.utils.random(-1500, -600),
-        rotationX: () => gsap.utils.random(-500, -200)
+        y: i => -40 * Math.abs(i - mid),
+        z: i => randomZ[i],
+        rotationX: i => randomRotX[i]
       }, {
         opacity: 1,
         y: 0, z: 0, rotationX: 0,
@@ -116,11 +141,12 @@ const scroll = () => {
   types[6].forEach(title => {
     const chars = title.querySelectorAll(".char");
     const N = chars.length;
-
-    gsap.fromTo(chars, { y: i => {
+    const yVals = Array.from(chars).map((_, i) => {
       const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
       return (N/2 - f + 6)*130;
-    }}, {
+    });
+
+    gsap.fromTo(chars, { y: i => yVals[i] }, {
       y: 0,
       ease: "elastic.out(.4)",
       stagger: { amount: 0.1, from: "center" },
@@ -131,6 +157,7 @@ const scroll = () => {
   // Type 8
   types[7].forEach(title => {
     const chars = title.querySelectorAll(".char");
+
     gsap.fromTo(chars, { scaleY: 0, transformOrigin: "50% 100%" }, {
       opacity: 1,
       scaleY: 1,
@@ -142,23 +169,31 @@ const scroll = () => {
 
   // Type 9
   types[8].forEach(title => {
-    title.querySelectorAll(".word").forEach(word => {
+    const words = title.querySelectorAll(".word");
+
+    words.forEach(word => {
       const chars = word.querySelectorAll(".char");
       const N = chars.length;
 
+      const scaleVals = Array.from(chars).map((_, i) => {
+        const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
+        return gsap.utils.mapRange(0, N/2, 0.5, 2.1, f);
+      });
+
+      const yVals = Array.from(chars).map((_, i) => {
+        const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
+        return gsap.utils.mapRange(0, N/2, 0, 60, f);
+      });
+
+      const rotVals = Array.from(chars).map((_, i) => {
+        const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
+        return i < N/2 ? gsap.utils.mapRange(0, N/2, -4,0,f) : gsap.utils.mapRange(0, N/2,0,4,f);
+      });
+
       gsap.fromTo(chars, {
-        scale: i => {
-          const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
-          return gsap.utils.mapRange(0, N/2, 0.5, 2.1, f);
-        },
-        y: i => {
-          const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
-          return gsap.utils.mapRange(0, N/2, 0, 60, f);
-        },
-        rotation: i => {
-          const f = i < N/2 ? i : N/2 - Math.abs(Math.floor(N/2)-i)-1;
-          return i < N/2 ? gsap.utils.mapRange(0, N/2, -4,0,f) : gsap.utils.mapRange(0, N/2,0,4,f);
-        },
+        scale: i => scaleVals[i],
+        y: i => yVals[i],
+        rotation: i => rotVals[i],
         filter: "blur(12px) opacity(0)",
         transformOrigin: "50% 100%"
       }, {
@@ -175,12 +210,17 @@ const scroll = () => {
     const words = title.querySelectorAll(".word");
     setPerspective(words, 1000);
 
+    const randZ = Array.from(words).map(() => gsap.utils.random(500, 950));
+    const randX = Array.from(words).map(() => gsap.utils.random(-100, 100));
+    const randY = Array.from(words).map(() => gsap.utils.random(-10, 10));
+    const randRot = Array.from(words).map(() => gsap.utils.random(-90, 90));
+
     gsap.fromTo(words, {
-      z: () => gsap.utils.random(500,950),
-      opacity:0,
-      xPercent: () => gsap.utils.random(-100,100),
-      yPercent: () => gsap.utils.random(-10,10),
-      rotationX: () => gsap.utils.random(-90,90)
+      z: i => randZ[i],
+      opacity: 0,
+      xPercent: i => randX[i],
+      yPercent: i => randY[i],
+      rotationX: i => randRot[i]
     }, {
       z:0, xPercent:0, yPercent:0, rotationX:0, rotationY:0, opacity:1,
       ease:"expo",
